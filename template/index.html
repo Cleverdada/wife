@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
+    <title>BDP同步客户端</title>
+</head>
+<body>
+    hello, world
+    <input id="file" type="file" multiple="multiple" />
+    <button onclick="upload()">登录</button>
+</body>
+
+<script>
+    function uploadComplete() {
+        alert("complete")
+    }
+
+    function uploadFailed() {
+        alert("failed")
+    }
+
+    function upload() {
+        var files = document.getElementById("file").files;
+        var formData = new FormData();
+        formData.append('file', files[0]);
+        var url = "http://localhost:8080/api/excel/upload";
+        var xhr = new XMLHttpRequest();
+        xhr.addEventListener("load", uploadComplete, false);
+        xhr.addEventListener("error", uploadFailed, false);
+        xhr.open('post', url);
+        xhr.send(formData);
+
+    }
+</script>
