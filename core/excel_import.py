@@ -7,7 +7,7 @@ from util.mysql import connection
 
 class ExcelImport(object):
     def get_excel_data(self, excel_path):
-        return xlrd.open_workbook(excel_path)
+        return xlrd.open_workbook(excel_path, encoding_override="gbk")
 
     def validate_excel_header(self):
         pass
@@ -17,7 +17,8 @@ class ExcelImport(object):
 
 
 if __name__ == '__main__':
-    in_path = "resource/考勤.xls"
+    # in_path = "resource/考勤.xls"
+    in_path = "/Users/HaiZhi/Desktop/9月考勤.xlsx"
     excel_import = ExcelImport()
     excel_data = excel_import.get_excel_data(in_path)
     sheet0 = excel_data.sheets()[0]
@@ -45,7 +46,7 @@ if __name__ == '__main__':
         else:
             sql = "insert into april values(%s, %s, %s)"
             print sql
-            d = [sheet0.row_values(i)[1], sheet0.row_values(i)[2], sheet0.row_values(i)[3]]
+            d = [sheet0.row_values(i)[0], sheet0.row_values(i)[1], sheet0.row_values(i)[2]]
             cursor.execute(sql, d)
     cursor.close()
     connection.commit()
