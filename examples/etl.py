@@ -11,7 +11,7 @@ import os
 headers = ['mSigma', 'Observed Intens', 'Observed m/z', 'calc. m/z', 'err mDa', 'err ppm', 'sum formula', 'Br', 'C',
            'Cl', 'H', 'N', 'O', 'S', 'rdb', 'DBE', 'H/C', 'O/C', 'intensity', 'N/C', 'KM', 'KMD', 'Z', 'type']
 
-types = ['Br', 'C', 'Cl', 'H', 'N', 'O', 'S']
+types = ['Br', 'Cl', 'N', 'O', 'S']
 
 input_path = '../resource/30.csv'
 with open(input_path) as f:
@@ -54,11 +54,11 @@ def gen_dbe():
         r[index('H/C')] = get_float_value(r, 'H') / get_float_value(r, 'C')
         r[index('O/C')] = get_float_value(r, 'O') / get_float_value(r, 'C')
         r[index('N/C')] = get_float_value(r, 'N') / get_float_value(r, 'C')
-        r[index('intensity')] = get_float_value(r, 'Observed Intens') - max_b
+        r[index('intensity')] = get_float_value(r, 'Observed Intens') / max_b
 
     HC_filter = [r for r in body if 0.333 <= get_float_value(r, 'H/C') <= 2.25]
     OC_filter = [r for r in HC_filter if 0.1 <= get_float_value(r, 'O/C') <= 1]
-    NC_filter = [r for r in OC_filter if 0.1 <= get_float_value(r, 'N/C') <= 1]
+    NC_filter = [r for r in OC_filter if get_float_value(r, 'N/C') < 0.5]
     DBE_filter = [r for r in NC_filter if verify(get_str_value(r, 'DBE')) == 'int']
 
     return DBE_filter
@@ -97,8 +97,7 @@ def gen_observers():
 def gen_km():
     for observer in body_observers:
         observer[index('KM')] = get_float_value(observer, 'Observed m/z') * 14 / 14.01565
-        observer[index('KMD')] = (round(get_float_value(observer, 'KM')) - get_float_value(observer,
-                                                                                           'Observed m/z')) * 1000
+        observer[index('KMD')] = (round(get_float_value(observer, 'KM')) - get_float_value(observer, 'KM')) * 1000
         observer[index('DBE')] = get_int_value(observer, 'DBE')
         Z = get_int_value(observer, 'DBE') - 2 * get_int_value(observer, 'C')
         observer.append(Z)
@@ -112,7 +111,10 @@ def concat_type(observer):
     for i in types:
         if get_int_value(observer, i) == 0:
             continue
-        origin_str += i + get_str_value(observer, i)
+        if get_int_value(observer, i) == 1:
+            origin_str += " " + i
+            continue
+        origin_str += " " + i + get_str_value(observer, i)
     return origin_str
 
 
