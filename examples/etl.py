@@ -126,7 +126,7 @@ class processData(object):
             # observer[index('KMD')] = (round(get_float_value(observer, 'KM')) - get_float_value(observer, 'KM')) * 1000
             observer.append((round(get_float_value(observer, 'KM')) - get_float_value(observer, 'KM')) * 1000)
             observer[index('DBE')] = get_int_value(observer, 'DBE')
-            Z = get_int_value(observer, 'DBE') - 2 * get_int_value(observer, 'C')
+            Z = get_int_value(observer, 'H') - 2 * get_int_value(observer, 'C')
             observer.append(Z)
             Type = self.concat_type(observer)
             observer.append(Type)
