@@ -18,9 +18,18 @@ def index(path):
     return send_from_directory(template_path, path, mimetype=mimetype)
 
 
+@app.route('/mail', methods=['GET'])
+def mail():
+    print "mail has read"
+    return ""
+
+
+@app.route('/shot', methods=['GET'])
+def shot():
+    print "shot success"
+    return ""
+
+
 @app.route('/', methods=['GET'])
 def home():
     return send_from_directory(template_path, 'index.html')
-
-
-
